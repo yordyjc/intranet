@@ -19,6 +19,7 @@ RUN curl -sS https://getcomposer.org/installer | php -- \
     --install-dir=/usr/local/bin \
     --filename=composer
 
+
 COPY ./entrypoint.sh /usr/local/bin
 
 RUN chmod +x /usr/local/bin/entrypoint.sh
@@ -27,4 +28,8 @@ RUN chmod +x /usr/local/bin/entrypoint.sh
 
 WORKDIR /var/www/html
 
+CMD composer update
+CMD php artisan migrate
+
+CMD ["php-fpm"]
 
