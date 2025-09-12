@@ -1,7 +1,18 @@
 services:
+  mysql:
+      image: mysql:8.0
+      container_name: mysql80
+      environment:
+        MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+        MYSQL_DATABASE: ${MYSQL_DATABASE}
+      ports:
+        - "3306:3306"
+      volumes:
+        - dbdata:/var/lib/mysql
   php:
     build:
-      context: ./php84
+      context: .
+      dockerfile: ./php84/Dockerfile
     container_name: php84
     volumes:
       - ./src:/var/www/html
@@ -10,7 +21,6 @@ services:
     depends_on:
       - mysql
       - mongodb
-
   web:
     build:
       context: ./nginx
@@ -23,26 +33,14 @@ services:
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
     depends_on:
       - php
-
-  mysql:
-    image: mysql:8.0
-    container_name: mysql80
-    environment:
-      MYSQL_ROOT_PASSWORD: 12345
-      MYSQL_DATABASE: intranet
-    ports:
-      - "3306:3306"
-    volumes:
-      - dbdata:/var/lib/mysql
-
   mongodb:
     image: mongo:6.0
     container_name: mongodb
     restart: always
     environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: 12345
-      MONGO_INITDB_DATABASE: intranet
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+      MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE}
     ports:
       - "27017:27017"
     volumes:
