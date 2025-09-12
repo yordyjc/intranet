@@ -1,6 +1,7 @@
 FROM php:8.4-fpm
 
 RUN apt-get update && apt-get install -y \
+    libssl-dev \
     nano \
     curl \
     zip \
@@ -10,9 +11,12 @@ RUN apt-get update && apt-get install -y \
     libonig-dev \
     libxml2-dev \
     default-mysql-client \
+    && pecl install mongodb \
+    && docker-php-ext-enable mongodb \
     && docker-php-ext-install pdo pdo_mysql mysqli \
     && docker-php-ext-enable pdo_mysql mysqli \
     && rm -rf /var/lib/apt/lists/*
+
 # COMPOSER INSTALATION
 
 RUN curl -sS https://getcomposer.org/installer | php -- \
