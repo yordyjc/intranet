@@ -2,10 +2,16 @@
 set -e
 
 echo "Ejecutando composer install/update..."
-composer install --no-interaction --prefer-dist
+if ! composer install --no-interaction --prefer-dist; then
+  echo "Error en composer install"
+  exit 1
+fi
 
 echo "Ejecutando migraciones..."
-php artisan migrate --force
+if ! php artisan migrate --force; then
+  echo "Error en migraciones"
+  exit 1
+fi
 
-# Al final, lanza el proceso principal (de CMD)
+echo "Entrypoint terminado, lanzando proceso principal..."
 exec "$@"

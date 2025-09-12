@@ -19,12 +19,16 @@ RUN curl -sS https://getcomposer.org/installer | php -- \
     --install-dir=/usr/local/bin \
     --filename=composer
 
+COPY ./src /var/www/html/
 
-# COPY ./entrypoint.sh /usr/local/bin
-
-# RUN chmod +x /usr/local/bin/entrypoint.sh
-
-# ENTRYPOINT /usr/local/bin/entrypoint.sh
+RUN chmod -R 777 /var/www/html
 
 WORKDIR /var/www/html
 
+COPY ./php84/entrypoint.sh /usr/local/bin
+
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+
+CMD ["php-fpm", "--nodaemonize"]
