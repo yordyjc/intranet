@@ -7,5 +7,8 @@ RUN apt-get update && apt-get install -y \
     unzip \
     && rm -rf /var/lib/apt/lists/*
 
+
 WORKDIR /var/www/html
+
+RUN chmod 777 -R /var/www/html
 

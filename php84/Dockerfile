@@ -25,7 +25,7 @@ RUN curl -sS https://getcomposer.org/installer | php -- \
 
 COPY ./src /var/www/html/
 
-RUN chmod -R 777 /var/www/html
+RUN chmod 777 /var/www/html/composer.json
 
 WORKDIR /var/www/html
 
