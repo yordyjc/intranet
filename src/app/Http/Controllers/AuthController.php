@@ -7,9 +7,54 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use OpenApi\Annotations as OA;
+use Illuminate\Support\Facades\DB;
 
 class AuthController extends Controller
 {
+    /**
+    * @OA\Get(
+    *     path="/api/get-branches/{username}",
+    *     summary="Obtene sucursales",
+    *     @OA\Response(
+    *         response=200,
+    *         description="ok"
+    *     ),
+    *     @OA\Response(
+    *         response="401",
+    *         description="Acceso no autorizado"
+    *     ),
+    *     @OA\Response(
+    *         response="500",
+    *         description="Error en el servidor"
+    *     ),
+    *    security={{"sanctum": {}}},
+    *    @OA\Parameter(
+    *         name="username",
+    *         in="path",
+    *         description="Nombre de usuario",
+    *         required=true,
+    *         @OA\Schema(type="string")
+    *     ),
+    * )
+    */
+    public function getBranches($username) : JsonResponse
+    {
+        // return response()->json(['message' => 'ok']);
+        $query = "SELECT
+                        LTRIM(RTRIM(GE_SUCURSAL.SUCURSAL)) as CODIGO,
+                        LTRIM(RTRIM(GE_SUCURSAL.NOMBRE)) as SUCURSAL
+                    FROM
+                        GE_SUCURSAL WITH ( NOLOCK )
+                        INNER JOIN SY_SEGURIDADAUTORIZACIONES WITH ( NOLOCK ) ON RTRIM( GE_SUCURSAL.SUCURSAL ) = RTRIM( SY_SEGURIDADAUTORIZACIONES.CONCEPTO )
+                    WHERE
+                        GE_SUCURSAL.ESTADO = 'A'
+                        AND SY_SEGURIDADAUTORIZACIONES.GRUPO = 'SUCURSAL'
+                        AND SY_SEGURIDADAUTORIZACIONES.ESTADO = 'A'
+                        AND SY_SEGURIDADAUTORIZACIONES.USUARIO = '".$username."'";
+        $branches = DB::connection('sqlsrv')->select($query);
+        return response()->json($branches);
+    }
+
     /**
     * @OA\Post(
     *     path="/api/login",
@@ -30,8 +75,8 @@ class AuthController extends Controller
     *         required=true,
     *         @OA\JsonContent(
     *             required={"email","password"},
-    *             @OA\Property(property="email", type="string", format="email", example="user@example.com"),
-    *             @OA\Property(property="password", type="string", format="password", example="123456")
+    *             @OA\Property(property="email", type="string", format="email", example="yordyjc.chura@gmail.com"),
+    *             @OA\Property(property="password", type="string", format="password", example="12345")
     *         )
     *     ),
     * )
@@ -72,12 +117,15 @@ class AuthController extends Controller
      *     ),
      *     @OA\Response(
      *         response="401",
-     *         description="Tu token no es valido o ya expiro"
+     *         description="Tu token no es valido o ya expiro",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Logged out"),
+     *         )
      *     ),
      *    security={{"sanctum": {}}},
      * )
      */
-    public function logout(Request $request)
+    public function logout(Request $request) : JsonResponse
     {
         try
         {

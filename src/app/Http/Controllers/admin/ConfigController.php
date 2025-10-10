@@ -8,7 +8,7 @@ use OpenApi\Annotations as OA;
 use App\Models\User;
 
 /**
-* @OA\Info(title="API Usuarios", version="1.0")
+* @OA\Info(title="API Intranet", version="1.0")
 *
 * @OA\Server(url="http://localhost:8000")
 */

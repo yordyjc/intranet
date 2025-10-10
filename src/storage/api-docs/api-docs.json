@@ -1,7 +1,7 @@
 {
     "openapi": "3.0.0",
     "info": {
-        "title": "API Usuarios",
+        "title": "API Intranet",
         "version": "1.0"
     },
     "servers": [
@@ -10,6 +10,39 @@
         }
     ],
     "paths": {
+        "/api/get-branches/{username}": {
+            "get": {
+                "summary": "Obtene sucursales",
+                "operationId": "5fb16c3c5980053ae041a3278b195d73",
+                "parameters": [
+                    {
+                        "name": "username",
+                        "in": "path",
+                        "description": "Nombre de usuario",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "ok"
+                    },
+                    "401": {
+                        "description": "Acceso no autorizado"
+                    },
+                    "500": {
+                        "description": "Error en el servidor"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
         "/api/login": {
             "post": {
                 "summary": "Iniciar sesion",
@@ -27,12 +60,12 @@
                                     "email": {
                                         "type": "string",
                                         "format": "email",
-                                        "example": "user@example.com"
+                                        "example": "yordyjc.chura@gmail.com"
                                     },
                                     "password": {
                                         "type": "string",
                                         "format": "password",
-                                        "example": "123456"
+                                        "example": "12345"
                                     }
                                 },
                                 "type": "object"
@@ -65,7 +98,20 @@
                         "description": "Error en el servidor"
                     },
                     "401": {
-                        "description": "Tu token no es valido o ya expiro"
+                        "description": "Tu token no es valido o ya expiro",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Logged out"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [

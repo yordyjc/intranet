@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 /**
  * @OA\SecurityScheme(
  *     securityScheme="sanctum",
@@ -10,8 +11,6 @@ namespace App\Http\Controllers;
  *     description="Autenticación con token de Laravel Sanctum (Bearer {token})"
  * )
  */
-
-
 abstract class Controller
 {
     //
